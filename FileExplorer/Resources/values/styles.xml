@@ -1,0 +1,21 @@
+<resources>
+
+	<style name="AppThemeLight" parent="Theme.MaterialComponents.Light.NoActionBar">
+		<!--<item name="android:windowLayoutInDisplayCutoutMode">never</item>-->
+	</style>
+	<style name="AppThemeLight.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+	<style name="AppThemeLight.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+
+
+	<style name="AppThemeDark" parent="Theme.AppCompat.Light.DarkActionBar">
+		<item name="colorPrimary">@color/colorPrimary</item>
+		<item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+		<item name="colorAccent">@color/colorAccent</item>
+	</style>
+	<style name="AppThemeDark.NoActionBar">
+		<item name="windowActionBar">false</item>
+		<item name="windowNoTitle">true</item>
+	</style>
+
+
+</resources>
