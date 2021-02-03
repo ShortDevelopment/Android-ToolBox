@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using Android;
@@ -66,6 +67,11 @@ namespace FileExplorer
             #endregion
 
             RequestPermissions(new[] { Permission.ReadExternalStorage, Permission.WriteExternalStorage, Permission.ManageDocuments, "android.permission.ACCESS_ALL_DOWNLOADS" }, 12345);
+            if(Utilities.IsApiLevel(BuildVersionCodes.R) && !Android.OS.Environment.IsExternalStorageManager)
+            {
+                var intent = new Intent("android.settings.MANAGE_ALL_FILES_ACCESS_PERMISSION");
+                StartActivity(intent);
+            }
 
             try
             {
@@ -193,46 +199,45 @@ namespace FileExplorer
 
             toolbar.Subtitle = path;
 
-#if !DEBUG
             try
             {
-#endif
 
-            data.Clear();
+                data.Clear();
 
-            foreach (var dir in Directory.GetDirectories(path).OrderBy((x) => x))
-            {
-                var item = new FileListViewItem();
-                item.IsDirectory = true;
-                item.Path = dir;
-                data.Add(item);
-            }
-            foreach (var dir in Directory.GetFiles(path).OrderBy((x) => x))
-            {
-                var item = new FileListViewItem();
-                item.IsDirectory = false;
-                item.Path = dir;
-                item.Thumbnail = (new Java.IO.File(item.Path)).GetThumbnail();
-                data.Add(item);
-            }
+                foreach (var dir in Directory.GetDirectories(path).OrderBy((x) => x))
+                {
+                    var item = new FileListViewItem();
+                    item.IsDirectory = true;
+                    item.Path = dir;
+                    data.Add(item);
+                }
+                foreach (var dir in Directory.GetFiles(path).OrderBy((x) => x))
+                {
+                    var item = new FileListViewItem();
+                    item.IsDirectory = false;
+                    item.Path = dir;
+                    item.Thumbnail = (new Java.IO.File(item.Path)).GetThumbnail();
+                    data.Add(item);
+                }
 
-            var linearLayout = FindViewById<LinearLayout>(Resource.Id.linearLayout1);
-            if (data.Count == 0)
-            {
-                linearLayout.Visibility = ViewStates.Visible;
-            }
-            else
-            {
-                linearLayout.Visibility = ViewStates.Gone;
-            }
+                var linearLayout = FindViewById<LinearLayout>(Resource.Id.linearLayout1);
+                if (data.Count == 0)
+                {
+                    linearLayout.Visibility = ViewStates.Visible;
+                }
+                else
+                {
+                    linearLayout.Visibility = ViewStates.Gone;
+                }
 
-            FindViewById<ListView>(Resource.Id.listView1).Adapter = new FileListViewAdapter(this, data);
-#if !DEBUG
+                FindViewById<ListView>(Resource.Id.listView1).Adapter = new FileListViewAdapter(this, data);
             }
-            catch(Exception ex) {
+            catch (Exception ex)
+            {
+                if (Debugger.IsAttached)
+                    Debugger.Break();
                 Snackbar.Make(FindViewById(Android.Resource.Id.Content), $"Fehler! {ex.Message}", Snackbar.LengthLong).Show();
             }
-#endif
         }
 
         #region UI Behaviour
@@ -260,6 +265,12 @@ namespace FileExplorer
             int id = item.ItemId;
             if (id == Resource.Id.action_settings)
             {
+                try
+                {
+                    var intent = new Intent("android.settings.MANAGE_ALL_FILES_ACCESS_PERMISSION");
+                    StartActivity(intent);
+                }
+                catch { }
                 return true;
             }
 

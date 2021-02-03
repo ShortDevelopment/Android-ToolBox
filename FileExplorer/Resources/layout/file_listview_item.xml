@@ -9,7 +9,9 @@
         android:layout_width="30dp"
         android:layout_height="30dp"
         android:layout_margin="10dp"
-        android:src="@drawable/baseline_insert_drive_file_24"/>
+        android:src="@drawable/baseline_insert_drive_file_24"
+        android:adjustViewBounds="true"
+        android:scaleType="centerCrop"/>
     <TextView
         android:id="@+id/textView1"
         android:layout_width="match_parent"

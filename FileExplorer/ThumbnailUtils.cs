@@ -39,7 +39,6 @@ namespace FileExplorer
                 if (raw != null)
                 {
                     return BitmapFactory.DecodeByteArray(raw, 0, raw.Length);
-                    return ImageDecoder.DecodeBitmap(ImageDecoder.CreateSource(Java.Nio.ByteBuffer.Wrap(raw)));
                 }
             }
             catch {}
@@ -58,7 +57,6 @@ namespace FileExplorer
             try
             {
                 return BitmapFactory.DecodeFile(file.AbsolutePath);
-                return ImageDecoder.DecodeBitmap(ImageDecoder.CreateSource(file));
             }
             catch { }
             return null;

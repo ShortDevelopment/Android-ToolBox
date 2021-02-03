@@ -66,45 +66,37 @@ namespace FileExplorer
             var StatsManager = (StorageStatsManager)ParentActivity.GetSystemService(Context.StorageStatsService);
             // StorageStatsManager.QueryStatsForUid()
 
-            UUID uuid = null;
-
+            long freeBytes = 0, totalBytes = 0;
             if (item.IsPrimary)
             {
-                uuid = StorageManager.UuidDefault;
-            }else if (!string.IsNullOrEmpty(item.Uuid))
+                var uuid = StorageManager.UuidDefault;
+                freeBytes = StatsManager.GetFreeBytes(uuid);
+                totalBytes = StatsManager.GetTotalBytes(uuid);
+            }
+            else
             {
                 // uuid = UUID.NameUUIDFromBytes(System.Text.Encoding.Default.GetBytes(item.Uuid));
-                try
-                {
-                    uuid = UUID.FromString(item.Uuid);
-                }
-                catch (Exception)
-                {
-
-                }
+                var stats = new StatFs(item.GetPath());
+                freeBytes = stats.AvailableBytes;
+                totalBytes = stats.TotalBytes;
             }
 
-            if(uuid != null)
+            try
             {
-                try
-                {
-                    var freeBytes = StatsManager.GetFreeBytes(uuid);
-                    var totalBytes = StatsManager.GetTotalBytes(uuid);
-                    var percent = (double)(totalBytes - freeBytes) / (double)totalBytes;
+                var percent = (double)(totalBytes - freeBytes) / (double)totalBytes;
 
-                    var progressBar = convertView.FindViewById<ProgressBar>(Resource.Id.progressBar1);
-                    progressBar.SetProgress((int)(percent * 100), true);
-                    if (percent < 0.9)
-                    {
-                        progressBar.ProgressDrawable.SetColorFilter(Color.ParseColor("#1565C0"), PorterDuff.Mode.SrcIn);
-                    }
-                    else
-                    {
-                        progressBar.ProgressDrawable.SetColorFilter(Color.ParseColor("#e53935"), PorterDuff.Mode.SrcIn);
-                    }
+                var progressBar = convertView.FindViewById<ProgressBar>(Resource.Id.progressBar1);
+                progressBar.SetProgress((int)(percent * 100), true);
+                if (percent < 0.9)
+                {
+                    progressBar.ProgressDrawable.SetColorFilter(Color.ParseColor("#1565C0"), PorterDuff.Mode.SrcIn);
                 }
-                catch { }
+                else
+                {
+                    progressBar.ProgressDrawable.SetColorFilter(Color.ParseColor("#e53935"), PorterDuff.Mode.SrcIn);
+                }
             }
+            catch { }
 
             return convertView;
         }

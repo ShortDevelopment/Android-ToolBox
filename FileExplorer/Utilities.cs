@@ -16,6 +16,8 @@ using System.Text;
 using Xamarin.Essentials;
 using Uri = Android.Net.Uri;
 using Debug = System.Diagnostics.Debug;
+using Android.OS.Storage;
+using Google.Android.Material.Shadow;
 
 namespace FileExplorer
 {
@@ -45,15 +47,19 @@ namespace FileExplorer
             {
                 var intent = Utilities.CreateActionIntentFromFile(file.AbsolutePath);
                 var pm = Application.Context.PackageManager;
-                var matches = pm.QueryIntentActivities(intent, 0).OrderBy((x) => x.PreferredOrder).ToList();
+                var matches = pm.QueryIntentActivities(intent, 0).Where((x) => x.ActivityInfo.Enabled && x.ActivityInfo.IsEnabled).OrderBy((x) => x.PreferredOrder).ToList();
                 var priorityMatches = matches.Where((x) => x.PreferredOrder > 0).ToList();
+                Debug.Print(file.AbsolutePath);
+                Debug.Print(string.Join("\r\n", matches.Select((x) => x.ActivityInfo.ApplicationInfo.PackageName)));
                 if(priorityMatches.Count > 0)
                 {
-                    ret = ((BitmapDrawable)priorityMatches.Last().LoadIcon(pm))?.Bitmap;
+                    var iconRes = priorityMatches.Last()?.ActivityInfo.LoadIcon(pm);
+                    ret = ((BitmapDrawable)iconRes)?.Bitmap;
                 }
                 else if (matches.Count > 0)
                 {
-                    ret = ((BitmapDrawable)matches.First().LoadIcon(pm))?.Bitmap;
+                    var iconRes = matches.First()?.ActivityInfo.LoadIcon(pm);
+                    ret = iconRes.GetBitmap();
                 }
             }
             if(ret == null)
@@ -64,6 +70,22 @@ namespace FileExplorer
         }
         #endregion
 
+        /// <summary>
+        /// https://stackoverflow.com/a/46018816
+        /// </summary>
+        /// <param name="drawable"></param>
+        /// <returns></returns>
+        public static Bitmap GetBitmap(this Drawable drawable)
+        {
+            Bitmap bmp = Bitmap.CreateBitmap(drawable.IntrinsicWidth, drawable.IntrinsicHeight, Bitmap.Config.Argb8888);
+            using (Canvas canvas = new Canvas(bmp))
+            {
+                drawable.SetBounds(0, 0, canvas.Width, canvas.Height);
+                drawable.Draw(canvas);
+                return bmp;
+            }
+        }
+
         public static string GetMimeType(this File file)
         {
             var extension = System.IO.Path.GetExtension(file.Path).Replace(".", "").ToLower();
@@ -73,6 +95,18 @@ namespace FileExplorer
         public static Uri GetFileProviderUri(this File file)
         {
             return FileProvider.GetUriForFile(Application.Context, "de.shortdevelopment.fileexplorer.documents", file);
+        }
+
+        public static string GetPath(this StorageVolume storageVolume)
+        {
+            if (storageVolume.IsPrimary)
+            {
+                return "/storage/emulated/0";
+            }
+            else
+            {
+                return $"/storage/{storageVolume.Uuid}/";
+            }
         }
     }
 

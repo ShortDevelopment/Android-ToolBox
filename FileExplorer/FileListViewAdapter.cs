@@ -61,12 +61,10 @@ namespace FileExplorer
                 {
                     imageView.SetImageResource(Resource.Drawable.baseline_insert_drive_file_24);
                 }
-                imageView.SetScaleType(ImageView.ScaleType.CenterCrop);
             }
             else
             {
                 imageView.SetImageBitmap(item.Thumbnail);
-                imageView.SetScaleType(ImageView.ScaleType.Center);
             }
 
             return convertView;
