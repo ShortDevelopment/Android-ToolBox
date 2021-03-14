@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="?attr/actionBarSize">
+
+    <ImageView
+        android:id="@+id/faviconImageView"
+        android:layout_width="?attr/actionBarSize"
+        android:layout_height="match_parent"
+        android:padding="15dp"
+        android:layout_marginRight="10dp"
+        android:src="@mipmap/ic_launcher"/>
+
+    <EditText
+        android:id="@+id/urlTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:paddingLeft="20dp"
+        android:paddingRight="20dp"
+        android:paddingTop="5dp"
+        android:paddingBottom="5dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp"
+        android:hint="URL"
+        android:inputType="text"
+        android:imeOptions="actionGo"
+        android:textColorHint="@color/abc_hint_foreground_material_light"
+        android:textColor="@android:color/black"
+        android:elevation="20dp"
+        android:background="@drawable/round_edit_text_background"/>
+
+    <ImageButton
+        android:id="@+id/triggerOptionsMenuImageButton"
+        android:layout_width="50dp"
+        android:layout_height="match_parent"
+        android:tint="#fff"
+        android:background="@drawable/ripple_background"
+        android:src="@drawable/baseline_more_vert_18"/>
+
+</LinearLayout>

@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">Web DevTools</string>
+    <string name="action_settings">Settings</string>
+	<string name="logo_url">https://github.com/ChromeDevTools/devtools-logo</string>
+</resources>

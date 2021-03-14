@@ -1,0 +1,19 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+    <item
+        android:id="@+id/menu_console"
+        android:orderInCategory="100"
+        android:title="JS Console"
+        app:showAsAction="never" />
+	<item
+        android:id="@+id/menu_traffic"
+        android:orderInCategory="100"
+        android:title="Network Protocol"
+        app:showAsAction="never" />
+	<item
+        android:id="@+id/menu_dom"
+        android:orderInCategory="100"
+        android:title="HTML Dom"
+        app:showAsAction="never" />
+</menu>
