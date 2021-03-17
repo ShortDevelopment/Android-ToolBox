@@ -5,11 +5,13 @@ using Android.Runtime;
 using Android.Views;
 using Android.Webkit;
 using Android.Widget;
+using Java.Net;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Web_DevTools.utils.ListViewAdapters;
+using CookieManager = Android.Webkit.CookieManager;
 
 namespace Web_DevTools.utils.Dialogs
 {
@@ -42,6 +44,13 @@ namespace Web_DevTools.utils.Dialogs
             dialog.FindViewById<TextView>(Resource.Id.urlTextView).TextFormatted = Android.Text.Html.FromHtml($"<b>{Request.Method}</b> {Request.Url}");
 
             new DynamicListView(dialog.FindViewById<LinearLayout>(Resource.Id.requestHeadersListView)).Adapter = new HeaderListViewAdapter(BaseActivity, Request.RequestHeaders);
+
+            var cookieStr = CookieManager.Instance.GetCookie(Request.Url.ToString());
+            if(cookieStr != null)
+            {
+                var cookies = HttpCookie.Parse(cookieStr);
+                new DynamicListView(dialog.FindViewById<LinearLayout>(Resource.Id.requestCookiesListView)).Adapter = new HeaderListViewAdapter(BaseActivity, cookies.ToDictionary((x) => x.Name, (x) => x.Value));
+            }
         }
 
         #region Close
